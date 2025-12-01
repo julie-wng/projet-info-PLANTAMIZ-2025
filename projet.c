@@ -337,12 +337,12 @@ int jouer_1(char plateau[LIGNE][COLONNE]){
     
 }
 
-int jouer_2(){
-
+int jouer_2(char plateau[LIGNE][COLONNE]){
+    
     return 0;
 }
 
-int jouer_3(){
+int jouer_3(char plateau[LIGNE][COLONNE]){
 
     return 0;
 }
