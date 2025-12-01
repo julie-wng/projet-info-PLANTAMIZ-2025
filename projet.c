@@ -11,6 +11,16 @@ typedef struct{
     int y;
 }Coordonne;
 
+typedef struct infos {
+	char type1;
+	char type2;
+	int nb;
+	int x1;
+	int y1;
+	int x2;
+	int y2;
+}infos;
+
 //affichage du menu
 int menu() {
     int choix;
@@ -258,8 +268,61 @@ void permuter_items(char plateau[LIGNE][COLONNE], int x1, int y1, int x2, int y2
     plateau[y2][x2] = temp;
 }
 
-void manger(){
+int manger(char matrice[LIGNE][COLONNE], int*score) {
+	
+	infos test[10];
+	int n=0, item; 
+	
+	//	Détection par ligne
+	
+	for (int i=0; i<LIGNE; i++) {
+		for (int j=0; j<COLONNE; j++) {
+			
+			test[n].type1 = test[n].type2;
+			test[n].type2 = matrice[i][j];
+			test[n].x2 = i; test[n].y2 = j;
+			if ((test[n].type1 = test[n].type2)&&(test[n].nb<1)) {test[n].nb++; test[n].x1 = i; test[n].y1 = j-1;}
+			else if(test[n].nb>0) {n++;}
+			else {test[n].nb = 0;}
+			
+		}
+	}
+	
+	//	Détection par colonne
+	
+	for (int j=0; j<COLONNE; j++) {
+		for (int i=0; i<LIGNE; i++) {
+			
+			test[n].type1 = test[n].type2;
+			test[n].type2 = matrice[i][j];
+			test[n].x2 = i; test[n].y2 = j;
+			if ((test[n].type1 = test[n].type2)&&(test[n].nb<1)) {test[n].nb++; test[n].x1 = i-1; test[n].y1 = j;}
+			else if(test[n].nb>0) {n++;}
+			else {test[n].nb = 0;}
+			
+		}
+	}
+	
+	//	Suppression des cases "alignées"
+	
+	for (int k=0; k<n; k++) {
+		item = num_item(test[k].type1);
+		for (int j=0; j<COLONNE; j++) {
+			for (int i=0; i<LIGNE; i++) {
 
+			if ((i==test[k].x1)&&(j==test[k].y1)) {
+				matrice[i][j]=' ';
+				score[item]++;
+				if (test[k].x1 == test[k].x2) {test[k].y1++;}
+				else {test[k].x1++;}
+				}
+			if ((test[k].nb>5)&&(matrice[i][j]==test[k].type1)) {matrice[i][j]=' '; score[item]++;}
+
+			}
+		}	
+	}
+	if (n>0) {return 1;}
+	else {return 0;}
 }
 
 void gravite(char plateau[LIGNE][COLONNE]){
