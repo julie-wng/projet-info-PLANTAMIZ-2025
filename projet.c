@@ -233,23 +233,44 @@ void manger_rectangle(char plateau[LIGNE][COLONNE], int largeur, int longueur, C
     *score += points;
 }
 
-void deplacement_curseur(char touche, int *x, int *y){
-    //pour aller vers le haut
-    if (touche == 'z' && *y > 1){
-        *y = *y - 1;
-    }
-    //pour aller vers le bas
-    if (touche == 's' && *y < LIGNE){
-        *y = *y + 1;
-    }
-    // pour aller a gauche 
-    if (touche == 'q' && *x > 1){
-        *x = *x - 1;
-    }
-    //pour aller a droite 
-    if (touche == 'd' && *x < COLONNE){
-        *x = *x + 1;
-    }
+// le déplacement des items par z,q,s,d
+void DéplacerItem(char touche,int *x, int *y){
+	//en haut
+	if (touche == 'z' && *y> 0){
+	*y = *y + 1;
+	}
+	//en bas
+	if (touche == 's' && *y< 0) {
+	*y = *y - 1;
+	}
+	//a gauche
+	if (touche == 'q' && *x< 0){
+	*x = *x - 1;
+	}
+	//a droite
+	if (touche == 'd' && *x> 0){
+	*x = *x + 1;
+	}	
+	
+}
+// selectionner des items 
+void SelectItem(char touche,int *x, int *y){
+	//déplacement en haut
+	if (touche == ' ' && *y > 0){
+	*y = *y + 1;
+	}
+	//déplacement en bas
+	if 	(*y = *y - 1){
+        
+	}
+	//déplacement a gauche
+	if (touche == ' ' && *x< 0){
+	*x = *x - 1;
+	}
+	//déplacement a droite
+	if (touche == ' ' && *x> 0){
+	*x = *x + 1;
+	}	
 }
 
 void permuter_items(char plateau[LIGNE][COLONNE], int x1, int y1, int x2, int y2) {
