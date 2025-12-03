@@ -268,10 +268,15 @@ void permuter_items(char plateau[LIGNE][COLONNE], int x1, int y1, int x2, int y2
     plateau[y2][x2] = temp;
 }
 
-int manger(char matrice[LIGNE][COLONNE], int*score) {
+int manger(char matrice[LIGNE][COLONNE], int score[5]) {
 	
 	infos test[10];
 	int n=0, item; 
+	for (int i = 0; i < 10; i++) {
+		test[i].nb = 1;
+		test[i].type1 = ' ';
+		test[i].type2 = ' ';
+	}
 	
 	//	Détection par ligne
 	
@@ -280,13 +285,23 @@ int manger(char matrice[LIGNE][COLONNE], int*score) {
 			
 			test[n].type1 = test[n].type2;
 			test[n].type2 = matrice[i][j];
-			test[n].x2 = i; test[n].y2 = j;
-			if ((test[n].type1 = test[n].type2)&&(test[n].nb<1)) {test[n].nb++; test[n].x1 = i; test[n].y1 = j-1;}
-			else if(test[n].nb>0) {n++;}
-			else {test[n].nb = 0;}
+			
+			
+			if (test[n].type1 == test[n].type2) {
+				if (test[n].nb == 1) {
+					test[n].x1 = i; test[n].y1 = j-1;
+				}
+				test[n].nb++; 
+				test[n].x2 = i; test[n].y2 = j;
+			}
+			else if(test[n].nb>2) {n++;}
+			else {test[n].nb = 1;}
 			
 		}
 	}
+	
+	printf("Fin detection par ligne\n");
+	printf("%d", n);
 	
 	//	Détection par colonne
 	
@@ -295,27 +310,52 @@ int manger(char matrice[LIGNE][COLONNE], int*score) {
 			
 			test[n].type1 = test[n].type2;
 			test[n].type2 = matrice[i][j];
-			test[n].x2 = i; test[n].y2 = j;
-			if ((test[n].type1 = test[n].type2)&&(test[n].nb<1)) {test[n].nb++; test[n].x1 = i-1; test[n].y1 = j;}
-			else if(test[n].nb>0) {n++;}
-			else {test[n].nb = 0;}
+			
+			
+			if (test[n].type1 == test[n].type2) {
+				if (test[n].nb == 1) {
+					test[n].x1 = i-1; test[n].y1 = j;
+				}
+				test[n].nb++; 
+				test[n].x2 = i; test[n].y2 = j;
+			}
+			else if(test[n].nb>2) {n++;}
+			else {test[n].nb = 1;}
 			
 		}
 	}
+	
+		printf("Fin detection par colonne\n");
+		printf("%d", n);
 	
 	//	Suppression des cases "alignées"
 	
 	for (int k=0; k<n; k++) {
 		item = num_item(test[k].type1);
+		int vertical = 0;
+		if (test[k].x1 == test[k].x2) {
+			vertical = 1;
+		}
 		for (int j=0; j<COLONNE; j++) {
 			for (int i=0; i<LIGNE; i++) {
 
 			if ((i==test[k].x1)&&(j==test[k].y1)) {
+				if (matrice[i][j]!=test[k].type1) {printf("lettre : %c\nX1 : %d\tY1 : %d\nX2 : %d\tY2 : %d\n", matrice[i][j], test[k].x1, test[k].y1, test[k].x2, test[k].y2);}
 				matrice[i][j]=' ';
 				score[item]++;
-				if (test[k].x1 == test[k].x2) {test[k].y1++;}
-				else {test[k].x1++;}
+				if (vertical) {
+					test[k].y1++;
+					if (test[k].y1 > test[k].y2){
+						test[k].y1 = test[k].y2;
+					}
 				}
+				else {
+					test[k].x1++;
+					if (test[k].x1 > test[k].x2){
+						test[k].x1 = test[k].x2;
+					}
+				}
+			}
 			if ((test[k].nb>5)&&(matrice[i][j]==test[k].type1)) {matrice[i][j]=' '; score[item]++;}
 
 			}
