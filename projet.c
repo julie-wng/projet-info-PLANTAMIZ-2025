@@ -234,7 +234,7 @@ void manger_rectangle(char plateau[LIGNE][COLONNE], int largeur, int longueur, C
 }
 
 // le déplacement des items par z,q,s,d
-void DéplacerItem(char touche,int *x, int *y){
+void deplacer_items(char touche,int *x, int *y){
 	//en haut
 	if (touche == 'z' && *y> 0){
 	*y = *y + 1;
@@ -253,24 +253,25 @@ void DéplacerItem(char touche,int *x, int *y){
 	}	
 	
 }
-// selectionner des items 
-void SelectItem(char touche,int *x, int *y){
-	//déplacement en haut
-	if (touche == ' ' && *y > 0){
-	*y = *y + 1;
-	}
-	//déplacement en bas
-	if 	(*y = *y - 1){
-        
-	}
-	//déplacement a gauche
-	if (touche == ' ' && *x< 0){
-	*x = *x - 1;
-	}
-	//déplacement a droite
-	if (touche == ' ' && *x> 0){
-	*x = *x + 1;
-	}	
+
+// Selectionner et déselectionner des items par la touche espace
+
+void selectionner_items(char espace, int *mode, int *memoire) {
+    char espace = " "; 
+    if (espace == 1 && *memoire == 0) {
+        *mode = !(*mode);
+    }
+    
+    // sauvegarde 
+    *memoire = espace;
+
+    //Executer le mode
+    if (*mode == 1) {
+        deplacer_items; 
+    } 
+    else {
+        permuter_items;
+    }
 }
 
 void permuter_items(char plateau[LIGNE][COLONNE], int x1, int y1, int x2, int y2) {
