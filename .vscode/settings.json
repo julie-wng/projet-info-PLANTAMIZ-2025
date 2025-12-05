@@ -1,0 +1,8 @@
+{
+    "files.associations": {
+        "affichage_console.h": "c",
+        "windows.h": "c",
+        "time.h": "c"
+    },
+    "C_Cpp.errorSquiggles": "disabled"
+}
