@@ -530,7 +530,7 @@ int jouer_1(char plateau[LIGNE][COLONNE]){
         
         temps_ecoule = (double)(clock() - temps_debut) / CLOCKS_PER_SEC;
         temps_restant = duree_totale - temps_ecoule;
-        apparitionBombe(plateau);
+        
 
         //affichage du temps écoulé et du score
         gotoxy(0,2);
