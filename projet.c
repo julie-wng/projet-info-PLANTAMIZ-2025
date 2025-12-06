@@ -270,94 +270,91 @@ void permuter_items(char plateau[LIGNE][COLONNE], int x1, int y1, int x2, int y2
 
 int manger(char matrice[LIGNE][COLONNE], int score[5]) {
 	
-	infos test[10];
+	infos allignement[10];		// Créé une liste de 10 éléments (valeur arbitraire qui ne devrais logiquement pas pouvoir être atteinte ni dépassée)
 	int n=0, item; 
-	for (int i = 0; i < 10; i++) {
-		test[i].nb = 1;
-		test[i].type1 = ' ';
-		test[i].type2 = ' ';
+	for (int i = 0; i < 10; i++) {		// Initialise les allignements
+		allignement[i].nb_alligne = 1;
+		allignement[i].type_precedent = ' ';
+		allignement[i].type_actuel = ' ';
 	}
 	
-	//	Détection par ligne
+	//	--- Détection par ligne ---
 	
 	for (int i=0; i<LIGNE; i++) {
-		for (int j=0; j<COLONNE; j++) {
+		for (int j=0; j<COLONNE; j++) {		// Balaye la matrice ligne par ligne
 			
-			test[n].type1 = test[n].type2;
-			test[n].type2 = matrice[i][j];
+			allignement[n].type_precedent = allignement[n].type_actuel;		// Actualise le type de l'objet précédent
+			allignement[n].type_actuel = matrice[i][j];		// Actualise le type de l'objet testé
 			
 			
-			if (test[n].type1 == test[n].type2) {
-				if (test[n].nb == 1) {
-					test[n].x1 = i; test[n].y1 = j-1;
+			if (allignement[n].type_precedent == allignement[n].type_actuel) {		// Teste l'égalité du type actuel et du type précédent
+				if (allignement[n].nb_alligne == 1) {
+					allignement[n].x_initial = i; allignement[n].y_initial = j-1;	// Si les types correspondent,  on actualise les coordonnées initiales de l'allignement
 				}
-				test[n].nb++; 
-				test[n].x2 = i; test[n].y2 = j;
+				allignement[n].nb_alligne++;		// Incrémente le compteur d'allignement
+				allignement[n].x_final = i; allignement[n].y_final = j;		// Actualise les coordonnées finales de l'allignement
 			}
-			else if(test[n].nb>2) {n++;}
-			else {test[n].nb = 1;}
+			else if(allignement[n].nb_alligne>2) {n++;}		// Si l'allignement est au moins égal à 3, on "enregistre" l'allignement et on passe à l'allignement suivant
+			else {allignement[n].nb_alligne = 1;}		// Sinon on réinitialise le compteur d'allignement
 			
 		}
 	}
 	
-	printf("Fin detection par ligne\n");
-	printf("%d", n);
+
 	
-	//	Détection par colonne
+	//	--- Détection par colonne ---
 	
 	for (int j=0; j<COLONNE; j++) {
-		for (int i=0; i<LIGNE; i++) {
+		for (int i=0; i<LIGNE; i++) {		// Balaye la matrice colonne par colonne
 			
-			test[n].type1 = test[n].type2;
-			test[n].type2 = matrice[i][j];
+			allignement[n].type_precedent = allignement[n].type_actuel;		// Actualise le type de l'objet précédent
+			allignement[n].type_actuel = matrice[i][j];		// Actualise le type de l'objet testé
 			
 			
-			if (test[n].type1 == test[n].type2) {
-				if (test[n].nb == 1) {
-					test[n].x1 = i-1; test[n].y1 = j;
+			if (allignement[n].type_precedent == allignement[n].type_actuel) {		// Teste l'égalité du type actuel et du type précédent
+				if (allignement[n].nb_alligne == 1) {
+					allignement[n].x_initial = i-1; allignement[n].y_initial = j;	// Si les types correspondent,  on actualise les coordonnées initiales de l'allignement
 				}
-				test[n].nb++; 
-				test[n].x2 = i; test[n].y2 = j;
+				allignement[n].nb_alligne++; 		// Incrémente le compteur d'allignement
+				allignement[n].x_final = i; allignement[n].y_final = j;		// Actualise les coordonnées finales de l'allignement
 			}
-			else if(test[n].nb>2) {n++;}
-			else {test[n].nb = 1;}
+			else if(allignement[n].nb_alligne>2) {n++;}		// Si l'allignement est au moins égal à 3, on "enregistre" l'allignement et on passe à l'allignement suivant
+			else {allignement[n].nb_alligne = 1;}		// Sinon on réinitialise le compteur d'allignement
 			
 		}
 	}
 	
-		printf("Fin detection par colonne\n");
-		printf("%d", n);
+
 	
-	//	Suppression des cases "alignées"
+	//	--- Suppression des cases "alignées" ---
 	
-	for (int k=0; k<n; k++) {
-		item = num_item(test[k].type1);
-		int vertical = 0;
-		if (test[k].x1 == test[k].x2) {
+	for (int k=0; k<n; k++) {		// Pour tous les allignements détéctés
+		item = num_item(allignement[k].type_precedent);		// On actualise le numéro (int) associé au type de l'allignement
+		int vertical = 0;		// Booléen permettant de savoir si l'allignement est vertical (=1) ou horizontal (=0); initialisé à 0
+		if (allignement[k].x_initial == allignement[k].x_final) {		// Teste si l'allignement est vertical 
 			vertical = 1;
 		}
 		for (int j=0; j<COLONNE; j++) {
-			for (int i=0; i<LIGNE; i++) {
+			for (int i=0; i<LIGNE; i++) {		// Balaye la matrice 
 
-			if ((i==test[k].x1)&&(j==test[k].y1)) {
-				if (matrice[i][j]!=test[k].type1) {printf("lettre : %c\nX1 : %d\tY1 : %d\nX2 : %d\tY2 : %d\n", matrice[i][j], test[k].x1, test[k].y1, test[k].x2, test[k].y2);}
-				matrice[i][j]=' ';
-				score[item]++;
+			if ((i==allignement[k].x_initial)&&(j==allignement[k].y_initial)) {		// Teste l'égalité entre les coordonnées de la case actuelle et la position initiale de l'allignement enregistré
+				matrice[i][j]=' ';		// Efface l'élément correspondant
+				score[item]++;			// Incrémente le score pour le type associé
 				if (vertical) {
-					test[k].y1++;
-					if (test[k].y1 > test[k].y2){
-						test[k].y1 = test[k].y2;
+					allignement[k].y_initial++;		// Si vertical, incrémente la position initiale pour quelle corresponde à la position de l'élément suivant dans l'allignement
+					if (allignement[k].y_initial > allignement[k].y_final){		// Empèche qu'après l'incrément la position initiale ne dépasse la position finale
+						allignement[k].y_initial = allignement[k].y_final;
 					}
 				}
 				else {
-					test[k].x1++;
-					if (test[k].x1 > test[k].x2){
-						test[k].x1 = test[k].x2;
+					allignement[k].x_initial++;		// Incrémente la position initiale pour quelle corresponde à la position de l'élément suivant dans l'allignement
+					if (allignement[k].x_initial > allignement[k].x_final){		// Empèche qu'après l'incrément la position initiale ne dépasse la position finale
+						allignement[k].x_initial = allignement[k].x_final;
 					}
 				}
 			}
-			if ((test[k].nb>5)&&(matrice[i][j]==test[k].type1)) {matrice[i][j]=' '; score[item]++;}
-
+			if ((allignement[k].nb_alligne>5)&&(matrice[i][j]==allignement[k].type_precedent)) {matrice[i][j]=' '; score[item]++;}
+			// Teste l'égalité avec le type d'allignement si l'allignement est au moins égal à 6, auquel cas efface l'élément et incrémente le score du type
 			}
 		}	
 	}
