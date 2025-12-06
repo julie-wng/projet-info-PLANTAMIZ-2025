@@ -34,9 +34,11 @@ void afficherObjet(char plateau[LIGNE][COLONNE],char c, int x, int y, int couleu
     plateau[y][x] = c;
 }
 
-// Génère un item aléatoirement
-char genererItem() {
-    int val = rand()%5;
+
+// Génerer items aléatoirement 
+
+char genererItem(){
+        int val = rand()%5;
     char item;
     switch (val) {
         case 0:
@@ -56,8 +58,19 @@ char genererItem() {
             break;
     }
     return item;
-}
+}   
 
+// Générer item bombe aléatoirement(2% de chance)
+int apparitionBombe(char plateau[LIGNE][COLONNE]) {
+    int chance = rand()%50;
+    if (chance == 1) {
+        int y = rand()%LIGNE;
+        int x = rand()%COLONNE;
+        plateau[y][x] = 'B';
+        return 1;
+    }
+    return 0;
+}
 
 //initialise le jeu sans 3 ou plus d'items consecutifs
 void initialisation(char plateau[LIGNE][COLONNE]){
@@ -75,6 +88,7 @@ void initialisation(char plateau[LIGNE][COLONNE]){
                 case 'P': couleur = 2;  break; // vert
                 case 'O': couleur = 5;  break; // magenta
                 case 'M': couleur = 1;  break; // bleu
+                case 'B': couleur = 8;  break; // gris foncé
             }
             afficherObjet(plateau, item, x, y, couleur);
         }
@@ -153,6 +167,23 @@ int num_item(char item){
     }
     return val;
 
+}
+
+/// Effet bombe
+void activer_bombe(char plateau[LIGNE][COLONNE], int lig, int col, int *score) {
+    int i, j;
+    for (i = -1; i <= 1; i++) {
+        for (j = -1; j <= 1; j++) {
+            int cL = lig + i;
+            int cC = col + j;
+            if (cL >= 0 && cL < LIGNE && cC >= 0 && cC < COLONNE) {
+                if (plateau[cL][cC] != ' ') {
+                    plateau[cL][cC] = ' '; 
+                    *score += 5; 
+                }
+            }
+        }
+    }
 }
 
 //mange le H (vertical = horizontal = 3 items)
@@ -256,8 +287,8 @@ void deplacer_items(char touche,int *x, int *y){
 
 // Selectionner et déselectionner des items par la touche espace
 
-void selectionner_items(char espace, int *mode, int *memoire) {
-    char espace = " "; 
+/*void selectionner_items(char *espace, int *mode, int *memoire) {
+    char espace = ' ';
     if (espace == 1 && *memoire == 0) {
         *mode = !(*mode);
     }
@@ -431,7 +462,7 @@ void ecrire_fichier(char *file, char *nom_joueur, int niveau_joueur) {
 }
 
 //fonction principale
-int main(){
+/*int main(){
     srand(time(NULL));
     char plateau[LIGNE][COLONNE];
     int nb_vie = 5;
@@ -440,12 +471,11 @@ int main(){
     printf("Entrez votre prenom\n");
     scanf("%20s",joueur);
     choix=menu();*/
-    hide_cursor();
-    clrscr();
-    initialisation(plateau);
-    jouer_1(plateau);
-    show_cursor();
-    text_color(7);
-    return 0;
-}
+   // hide_cursor();
+    //clrscr();
+    //initialisation(plateau);
+    //jouer_1(plateau);
+    //show_cursor();
+    //text_color(7);
+   // return 0;}
 
