@@ -639,7 +639,7 @@ void toggleMusic(int* musique) {
 	if(*musique==1) {*musique = 0;}
 	else {*musique = 1;}
 	if (*musique == 1) {
-		PlaySound("Test.wav",NULL, SND_FILENAME | SND_LOOP | SND_ASYNC);
+		PlaySound("QueensGardens.wav",NULL, SND_FILENAME | SND_LOOP | SND_ASYNC);
 	}
 	else {
 		PlaySound(NULL, 0, 0);
