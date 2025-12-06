@@ -45,6 +45,11 @@ void afficherObjet(char plateau[LIGNE][COLONNE],char c, int x, int y, int couleu
 
 // Génère un item aléatoirement
 char genererItem() {
+    int chance = rand() % 50;
+    if (chance == 0) { 
+        return 'B'; 
+    } 
+    else {
     int val = rand()%5;
     char item;
     switch (val) {
@@ -65,6 +70,7 @@ char genererItem() {
             break;
     }
     return item;
+}
 }
 
 // Générer item bombe aléatoirement
@@ -250,7 +256,6 @@ int manger(char matrice[LIGNE][COLONNE], int score[5]) {
 	if (n>0) {return 1;}
 	else {return 0;}
 }
-
 // Gravitation
 void gravite(char plateau[LIGNE][COLONNE]){
     for (int x = 0; x < COLONNE; x++) {
@@ -280,7 +285,7 @@ void remplir_trous(char plateau[LIGNE][COLONNE]) {
 }
 
 /// Effet bombe
-void activer_bombe(char plateau[LIGNE][COLONNE], int x, int y, int *score[5]) {
+void activer_bombe(char plateau[LIGNE][COLONNE], int x, int y, int *score) {
     int i, j;
     for (i = -1; i <= 1; i++) {
         for (j = -1; j <= 1; j++) {
@@ -410,7 +415,7 @@ void initialisation(char plateau[LIGNE][COLONNE]){
 }
 
 //Déplace le curseur et permute si sélection
-void deplacerCurseur(int *y, int *x, int touche, char plateau[LIGNE][COLONNE], int selection, int *ligne_select, int *colonne_select) {
+void deplacerCurseur(int *y, int *x, int touche, char plateau[LIGNE][COLONNE], int selection, int *ligne_select, int *colonne_select, int score[]) {
 
     int nouvY = *y;
     int nouvX = *x;
@@ -435,6 +440,13 @@ void deplacerCurseur(int *y, int *x, int touche, char plateau[LIGNE][COLONNE], i
             // Remettre en majuscule les deux items après permutation
             plateau[nouvY][nouvX] = toupper(plateau[nouvY][nouvX]);
             plateau[*ligne_select][*colonne_select] = toupper(plateau[*ligne_select][*colonne_select]);
+            // On bouge la bombe, elle explose
+            if (plateau[nouvY][nouvX] == 'B') {
+                activer_bombe(plateau, nouvY, nouvX, score);
+            }
+            else if (plateau[*ligne_select][*colonne_select] == 'B') {
+                activer_bombe(plateau, *ligne_select, *colonne_select, score);
+            }
         }
     }
     // Mettre à jour la position du curseur
@@ -541,7 +553,7 @@ int jouer_1(char plateau[LIGNE][COLONNE]){
                 if(touche == 224) {
                     touche = getch();   // la vraie touche des fleches (72/80/75/77)
                     int ancien_selection = selection;
-                    deplacerCurseur(&y, &x, touche, plateau, selection, &ligne_select, &colonne_select);
+                    deplacerCurseur(&y, &x, touche, plateau, selection, &ligne_select, &colonne_select, score);
                     
                     // Si permutation effectuée
                     if(ancien_selection && selection) {
